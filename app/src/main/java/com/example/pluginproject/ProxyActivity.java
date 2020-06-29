@@ -1,8 +1,10 @@
 package com.example.pluginproject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.standard.ActivityInterFace;
 
@@ -38,6 +40,7 @@ public class ProxyActivity extends Activity {
             activityInterface.onCreate(bundle);
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d("dongp","exception=="+e.toString());
         }
     }
 
@@ -51,4 +54,11 @@ public class ProxyActivity extends Activity {
         return PluginManager.getInstance().getDexClassLoader();
     }
 
+    @Override
+    public void startActivity(Intent intent) {
+        String className = intent.getStringExtra("className");
+        Intent intent1 = new Intent(this, ProxyActivity.class);
+        intent1.putExtra("className", className);
+        super.startActivity(intent1);
+    }
 }

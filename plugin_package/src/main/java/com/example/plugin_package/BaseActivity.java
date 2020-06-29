@@ -2,6 +2,7 @@ package com.example.plugin_package;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.standard.ActivityInterFace;
@@ -45,5 +46,11 @@ public class BaseActivity extends AppCompatActivity implements ActivityInterFace
     @Override
     public void onDestroy() {
 
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        intent.putExtra("className",intent.getComponent().getClassName());
+        appActivity.startActivity(intent);
     }
 }
