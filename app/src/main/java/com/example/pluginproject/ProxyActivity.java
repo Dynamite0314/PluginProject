@@ -1,13 +1,16 @@
 package com.example.pluginproject;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.example.standard.ActivityInterFace;
+import com.example.standard.BroadcastInterFace;
 
 import java.lang.reflect.Constructor;
 
@@ -70,4 +73,14 @@ public class ProxyActivity extends Activity {
         service.putExtra("className", className);
         return super.startService(service);
     }
+
+    @Override
+    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
+        IntentFilter intentFilter = new IntentFilter();
+        for (int i = 0; i < filter.countActions(); i++) {
+            intentFilter.addAction(filter.getAction(i));
+        }
+        return super.registerReceiver(new ProxyReceiver(receiver.getClass().getName()), intentFilter);
+    }
+
 }

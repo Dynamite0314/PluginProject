@@ -23,4 +23,16 @@
         android:layout_height="wrap_content"
         android:text="内部启动内部service!" />
 
+    <Button
+        android:id="@+id/btn_reg_broad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="内部注册广播!" />
+
+    <Button
+        android:id="@+id/btn_send_broad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="内部发送广播!" />
+
 </LinearLayout>
