@@ -18,5 +18,12 @@ public class PluginActivity extends BaseActivity {
                 startActivity(new Intent(appActivity,PluginSecondActivity.class));
             }
         });
+        appActivity.findViewById(R.id.btn_start_service).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("dongp","PluginActivity onclick");
+                appActivity.startService(new Intent(appActivity,PluginService.class));
+            }
+        });
     }
 }

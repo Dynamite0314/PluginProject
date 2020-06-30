@@ -17,4 +17,10 @@
         android:layout_height="wrap_content"
         android:text="内部跳转到second_activity!" />
 
+    <Button
+        android:id="@+id/btn_start_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="内部启动内部service!" />
+
 </LinearLayout>
