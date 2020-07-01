@@ -15,6 +15,10 @@ import android.view.View;
 import com.example.standard.ActivityInterFace;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,5 +53,39 @@ public class MainActivity extends AppCompatActivity {
 
     public void startPlugin(View view) {
         startPluginActivity();
+    }
+
+    public void regPluginReceiver(View view) {
+        File file = new File(Environment.getExternalStorageDirectory() + File.separator + "plugin_package-debug.apk");
+        Class packageParserClass = null;
+        try {
+            packageParserClass = Class.forName("android.content.pm.PackageParser");
+            Method parsePackageMethod = packageParserClass.getDeclaredMethod("parsePackage", File.class, int.class);
+
+            Object packageParser = packageParserClass.newInstance();
+            // 调用parsePackage方法 返回PackageParser.Package
+            Object packageObj = parsePackageMethod.invoke(packageParser, file, PackageManager.GET_ACTIVITIES);
+
+            Field receiverField = packageObj.getClass().getDeclaredField("receivers");
+            //拿到receivers  广播集合
+            List receivers = (List) receiverField.get(packageObj);
+
+            Class<?> componentClass = Class.forName("android.content.pm.PackageParser$Component");
+            Field intentsField = componentClass.getDeclaredField("intents");
+
+
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

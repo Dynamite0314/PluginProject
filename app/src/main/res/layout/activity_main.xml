@@ -12,4 +12,19 @@
         android:onClick="startPlugin"
         android:text="启动插件activity" />
 
+    <Button
+        android:id="@+id/btn_reg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="regPluginReceiver"
+        android:text="注册插件中的广播"
+        />
+
+    <Button
+        android:id="@+id/btn_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="startPlugin"
+        android:text="发送广播" />
+
 </LinearLayout>
