@@ -24,7 +24,7 @@
         android:id="@+id/btn_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="startPlugin"
+        android:onClick="sendReceiver"
         android:text="发送广播" />
 
 </LinearLayout>

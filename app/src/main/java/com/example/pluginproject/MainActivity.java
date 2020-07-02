@@ -4,7 +4,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -68,11 +70,38 @@ public class MainActivity extends AppCompatActivity {
 
             Field receiverField = packageObj.getClass().getDeclaredField("receivers");
             //拿到receivers  广播集合
+            //        @UnsupportedAppUsage
+            //        public final ArrayList<Activity> receivers = new ArrayList<Activity>(0);
+            //Activity extends PackageParser$Component
             List receivers = (List) receiverField.get(packageObj);
 
             Class<?> componentClass = Class.forName("android.content.pm.PackageParser$Component");
             Field intentsField = componentClass.getDeclaredField("intents");
 
+
+            Class<?> packageParser$ActivityClass = Class.forName("android.content.pm.PackageParser$Activity");
+            Class<?> packageUserStateClass = Class.forName("android.content.pm.PackageUserState");
+            Object defaltUserState = packageUserStateClass.newInstance();
+            // 调用generateActivityInfo 方法, 把PackageParser.Activity 转换成ActivityInfo  拿到receiverName值
+            Method generateReceiverInfo = packageParserClass.getDeclaredMethod("generateActivityInfo",
+                    packageParser$ActivityClass, int.class, packageUserStateClass, int.class);
+
+            Class<?> userHandler = Class.forName("android.os.UserHandle");
+            Method getCallingUserIdMethod = userHandler.getDeclaredMethod("getCallingUserId");
+            int userId = (int) getCallingUserIdMethod.invoke(null);
+
+            for (Object activity : receivers) {
+                //生成ActivityInfo  一个receiver对应一个ActivityInfo
+                ActivityInfo info = (ActivityInfo) generateReceiverInfo.invoke(packageParser, activity, 0, defaltUserState, userId);
+                //拿到receiverName
+                BroadcastReceiver broadcastReceiver = (BroadcastReceiver) PluginManager.getInstance().getDexClassLoader().loadClass(info.name).newInstance();
+                //从Activity中拿到IntentFilter集合  intents变量
+                List<? extends IntentFilter> intents = (List<? extends IntentFilter>) intentsField.get(activity);
+                for (IntentFilter intentFilter : intents) {
+                    //动态注册，这里的context是ProxyActivity
+                    MainActivity.this.registerReceiver(broadcastReceiver, intentFilter);
+                }
+            }
 
         } catch (ClassNotFoundException | NoSuchMethodException e) {
             e.printStackTrace();
@@ -87,5 +116,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    public void sendReceiver(View view) {
+        sendBroadcast(new Intent("com.dongp.pluginrec"));
     }
 }
